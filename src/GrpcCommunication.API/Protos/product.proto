@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+
+option csharp_namespace = "GrpcCommunication.Grpc";
+
+service Product {	
+	rpc GetById (ProductRequest) returns (ProductResponse);	
+	rpc GetAllProducts (google.protobuf.Empty) returns (ProductListResponse);
+}
+
+message ProductRequest {
+	int32 id = 1; 
+}
+
+// Objetos da classe Produto
+message ProductResponse {
+	int32 id = 1;
+	string title = 2;
+	string description = 3;
+	double price = 4;
+	int32 quantity = 5;
+	string origin = 6;
+}
+
+// Coleção de objetos da classe Produto
+message ProductListResponse {
+  repeated ProductResponse products = 1;
+}

@@ -17,8 +17,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Protobuf Include="..\GrpcCommunication.API\Protos\product.proto" GrpcServices="Client">
-      <Link>Protos\product.proto</Link>
+    <Protobuf Include="..\GrpcCommunication.API\gRPC\Protos\product.proto" GrpcServices="Client">
+      <Link>gRPC\Protos\product.proto</Link>
     </Protobuf>
   </ItemGroup>
 

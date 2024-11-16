@@ -1,4 +1,5 @@
-﻿using GrpcCommunication.API.ProtoServices;
+﻿using GrpcCommunication.API.gRPC.Interceptors;
+using GrpcCommunication.API.gRPC.Services;
 
 namespace GrpcCommunication.API.Configuration;
 
@@ -7,14 +8,19 @@ public static class GrpcConfig
 
     public static IServiceCollection AddGrpcConfiguration(this IServiceCollection services)
     {
-        services.AddGrpc();
+        services.AddGrpc(option =>
+        {
+            option.EnableDetailedErrors = true;
+            option.Interceptors.Add<ServerLoggingInterceptor>();
+            //option.ResponseCompressionAlgorithm = "gzip";
+            //option.ResponseCompressionLevel = CompressionLevel.SmallestSize;
+        });
 
         return services;
     }
 
     public static WebApplication UseGrpcConfiguration(this WebApplication app)
     {
-
         app.MapGrpcService<ProductService>();
 
         app.MapGet("/", async context =>
@@ -23,7 +29,6 @@ public static class GrpcConfig
         });
 
         return app;
-
     }
 }
 

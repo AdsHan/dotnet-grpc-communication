@@ -5,7 +5,7 @@ using GrpcCommunication.API.Data.Enums;
 using GrpcCommunication.Grpc;
 using Microsoft.EntityFrameworkCore;
 
-namespace GrpcCommunication.API.ProtoServices;
+namespace GrpcCommunication.API.gRPC.Services;
 
 public class ProductService : Product.ProductBase
 {

@@ -1,6 +1,7 @@
 ﻿using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
 using Grpc.Net.Client;
+using Grpc.Net.Client.Configuration;
 using GrpcCommunication.Grpc;
 
 class Program
@@ -10,8 +11,7 @@ class Program
         Console.WriteLine("Aguardando 10 segundos...");
         await Task.Delay(10000);
 
-        var channel = GrpcChannel.ForAddress("https://localhost:5000");
-        var client = new Product.ProductClient(channel);
+        var client = ChannelConfig();
 
         var product = await GetByIdAsync(client, 1);
         Console.WriteLine($"Produto encontrado: {product.Title}, Preço: {product.Price}");
@@ -23,6 +23,37 @@ class Program
         }
 
         Console.ReadLine();
+    }
+
+    static Product.ProductClient ChannelConfig()
+    {
+        var retryPolicy = new RetryPolicy
+        {
+            MaxAttempts = 5, // Número máximo de tentativas
+            InitialBackoff = TimeSpan.FromSeconds(1), // Tempo inicial de espera
+            MaxBackoff = TimeSpan.FromSeconds(5), // Tempo máximo de espera
+            BackoffMultiplier = 2, // Multiplicador exponencial
+            RetryableStatusCodes = { StatusCode.Unavailable, StatusCode.DeadlineExceeded }
+        };
+
+        var methodConfig = new MethodConfig
+        {
+            Names = { MethodName.Default }, // Aplica a todos os métodos
+            RetryPolicy = retryPolicy
+        };
+
+        var channelOptions = new GrpcChannelOptions
+        {
+            ServiceConfig = new ServiceConfig
+            {
+                MethodConfigs = { methodConfig }
+            }
+        };
+
+        var channel = GrpcChannel.ForAddress("https://localhost:5000", channelOptions);
+        var client = new Product.ProductClient(channel);
+
+        return client;
     }
 
     static async Task<ProductResponse> GetByIdAsync(Product.ProductClient client, int id)

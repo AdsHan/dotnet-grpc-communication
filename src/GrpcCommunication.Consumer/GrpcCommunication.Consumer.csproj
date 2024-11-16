@@ -18,7 +18,7 @@
 
   <ItemGroup>
     <Protobuf Include="..\GrpcCommunication.API\gRPC\Protos\product.proto" GrpcServices="Client">
-      <Link>gRPC\Protos\product.proto</Link>
+      <Link>Protos\product.proto</Link>
     </Protobuf>
   </ItemGroup>
 
